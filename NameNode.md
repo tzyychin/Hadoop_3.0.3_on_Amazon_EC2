@@ -135,3 +135,18 @@ The value of namenode.name.dir is the location of the metadata directory we crea
         </property>
 </configuration>
 ```
+#### Edit hosts file
+```
+sudo rm -rf /etc/hosts
+echo "127.0.0.1 localhost" | sudo tee --append /etc/hosts > /dev/null 2>&1
+echo "127.0.1.1 $(hostname)" | sudo tee --append /etc/hosts > /dev/null 2>&1
+echo "${namenodeIP} namenode" | sudo tee --append /etc/hosts > /dev/null 2>&1
+echo "${datanode1IP} datanode1" | sudo tee --append /etc/hosts > /dev/null 2>&1
+echo "# The following lines are desirable for IPv6 capable hosts" | sudo tee --append /etc/hosts
+echo "::1 ip6-localhost ip6-loopback" | sudo tee --append /etc/hosts
+echo "fe00::0 ip6-localnet" | sudo tee --append /etc/hosts
+echo "ff00::0 ip6-mcastprefix" | sudo tee --append /etc/hosts
+echo "ff02::2 ip6-allrouters" | sudo tee --append /etc/hosts
+echo "ff02::3 ip6-allhosts" | sudo tee --append /etc/hosts
+sudo chown root /etc/hosts
+```
