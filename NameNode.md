@@ -69,12 +69,6 @@ echo "  HostName ${datanode1}" | sudo tee --append ~/.ssh/config
 echo "  User ubuntu" | sudo tee --append ~/.ssh/config
 echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
 ```
-#### Create metadata directories for your Namenode and DataNode(s)
-```
-sudo mkdir -p $HADOOP_HOME/metadata/NameNode
-sudo mkdir $HADOOP_HOME/metadata/DataNode
-sudo chown -R ubuntu $HADOOP_HOME/metadata/
-```
 #### Edit core-site.xml
 ```
 <configuration>
@@ -113,6 +107,12 @@ sudo chown -R ubuntu $HADOOP_HOME/metadata/
         <value>HADOOP_MAPRED_HOME=$HADOOP_COMMON_HOME</value>
     </property>
 </configuration>
+```
+#### Create metadata directories for your Namenode and DataNode(s)
+```
+sudo mkdir -p $HADOOP_HOME/metadata/NameNode
+sudo mkdir $HADOOP_HOME/metadata/DataNode
+sudo chown -R ubuntu $HADOOP_HOME/metadata/
 ```
 #### hdfs-site.xml
 1 replication would be good enough since we only have 2 nodes here.</br>
