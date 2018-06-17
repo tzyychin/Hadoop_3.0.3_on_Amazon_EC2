@@ -20,7 +20,7 @@ wget http://www-us.apache.org/dist/hadoop/common/hadoop-3.0.3/hadoop-3.0.3.tar.g
 ```
 sudo tar xzvf ~/Downloads/hadoop-*.tar.gz -C /usr/local
 ```
-rename hadoop3.0.3 located in /usr/local/ as hadoop and change the ownership to ubuntu (this is very important because it would save you from typing chown commands)
+rename "hadoop 3.0.3" directory located in /usr/local/ as "hadoop" and change the ownership of it to ubuntu
 ```
 sudo mv /usr/local/hadoop-* /usr/local/hadoop
 sudo chown -R ubuntu /usr/local/hadoop
@@ -31,13 +31,13 @@ sudo echo 'export HADOOP_HOME="/usr/local/hadoop"' | sudo tee --append /etc/prof
 sudo echo 'PATH="$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin"' | sudo tee --append /etc/profile.d/hadoop.sh
 sudo echo 'export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"' | sudo tee --append /etc/profile.d/hadoop.sh
 ```
-COPY the following lines with their respective private IPs (you can find them on your instance dashboard) and your private key to hadoop.sh
+fill in private IP addresses and the name your private key; then COPY them to hadoop.sh
 ```
 export namenodeIP="172.XXX.XXX.XXX"
 export datanode1IP="172.XXX.XXX.XXX"
 export IdentityFile="~/.ssh/YOUR_PRIVATE_KEY.pem"
 ```
-use the following command to load the environment variables
+reload the environment variables
 ```
 source /etc/profile.d/hadoop.sh
 ```
@@ -69,9 +69,68 @@ echo "  HostName ${datanode1}" | sudo tee --append ~/.ssh/config
 echo "  User ubuntu" | sudo tee --append ~/.ssh/config
 echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
 ```
-#### create metadata directories for your Namenode and DataNode(s)
+#### Create metadata directories for your Namenode and DataNode(s)
 ```
 sudo mkdir -p $HADOOP_HOME/metadata/NameNode
 sudo mkdir $HADOOP_HOME/metadata/DataNode
 sudo chown -R ubuntu $HADOOP_HOME/metadata/
+```
+#### Edit core-site.xml
+```
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://0.0.0.0:9000</value>
+    </property>
+        <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/tmp/hadoop-$(user.name)</value>
+    </property>
+</configuration>
+```
+#### yarn.xml
+```
+<configuration>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+</configuration>
+```
+#### mapred.xml
+```
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.admin.user.env</name>
+        <value>HADOOP_MAPRED_HOME=$HADOOP_COMMON_HOME</value>
+    </property>
+    <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=$HADOOP_COMMON_HOME</value>
+    </property>
+</configuration>
+```
+#### hdfs-site.xml
+1 replication would be good enough since we only have 2 nodes here.</br>
+The value of namenode.name.dir is the location of the metadata directory we created for the Master.  
+
+```
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+        <property>
+                <name>dfs.namenode.name.dir</name>
+                <value>usr/local/hadoop/metadata/NameNode</value>
+        </property>
+        <property>
+                <name>dfs.datanode.data.dir</name>
+                <value>usr/local/hadoop/metadata/DataNode</value>
+        </property>
+</configuration>
 ```
