@@ -25,7 +25,7 @@ rename "hadoop 3.0.3" directory located in /usr/local/ as "hadoop" and change th
 sudo mv /usr/local/hadoop-* /usr/local/hadoop
 sudo chown -R ubuntu /usr/local/hadoop
 ```
-#### Add HADOOP_ Environment variables
+#### Add HADOOP_HOME and HADOOP_CONF_DIR environment variables
 ```
 sudo echo 'export HADOOP_HOME="/usr/local/hadoop"' | sudo tee --append /etc/profile.d/hadoop.sh
 sudo echo 'PATH="$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin"' | sudo tee --append /etc/profile.d/hadoop.sh
@@ -83,6 +83,7 @@ echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
 </configuration>
 ```
 #### yarn.xml
+Referece: [Cloudera]: (https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_yarn_cluster_deploy.html)
 ```
 <configuration>
     <property>
