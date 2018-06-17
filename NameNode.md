@@ -83,7 +83,6 @@ echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
 </configuration>
 ```
 #### yarn.xml
-Referece: [Cloudera]: (https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_yarn_cluster_deploy.html)
 ```
 <configuration>
     <property>
@@ -93,6 +92,7 @@ Referece: [Cloudera]: (https://www.cloudera.com/documentation/enterprise/5-14-x/
 </configuration>
 ```
 #### mapred.xml
+Referece: [Cloudera]: (https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_yarn_cluster_deploy.html)
 ```
 <configuration>
     <property>
