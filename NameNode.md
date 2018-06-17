@@ -70,6 +70,7 @@ echo "  User ubuntu" | sudo tee --append ~/.ssh/config
 echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
 ```
 #### Edit core-site.xml
+Referece: [Cloudera](https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_yarn_cluster_deploy.html)
 ```
 <configuration>
     <property>
@@ -92,7 +93,6 @@ echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
 </configuration>
 ```
 #### mapred.xml
-Referece: [Cloudera](https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_yarn_cluster_deploy.html)
 ```
 <configuration>
     <property>
