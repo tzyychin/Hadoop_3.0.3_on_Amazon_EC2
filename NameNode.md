@@ -20,7 +20,7 @@ wget http://www-us.apache.org/dist/hadoop/common/hadoop-3.0.3/hadoop-3.0.3.tar.g
 ```
 sudo tar xzvf ~/Downloads/hadoop-*.tar.gz -C /usr/local
 ```
-R ename "hadoop 3.0.3" directory located in /usr/local/ as "hadoop" and change the ownership of it to ubuntu
+Rename "hadoop 3.0.3" directory located in /usr/local/ as "hadoop" and change the ownership of it to ubuntu
 ```
 sudo mv /usr/local/hadoop-* /usr/local/hadoop
 sudo chown -R ubuntu /usr/local/hadoop
@@ -74,7 +74,7 @@ echo "127.0.0.1 localhost" | sudo tee --append /etc/hosts
 echo "${namenodeIP} namenode" | sudo tee --append /etc/hosts
 echo "${datanode1IP} datanode1" | sudo tee --append /etc/hosts
 ```
-You may skip the following lines for IPv6 capable hosts.
+You may skip the following lines for IPv6 hosts.
 ```
 echo "# The following lines are desirable for IPv6 capable hosts" | sudo tee --append /etc/hosts
 echo "::1 ip6-localhost ip6-loopback" | sudo tee --append /etc/hosts
