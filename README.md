@@ -1,6 +1,5 @@
 ### Hadoop 3.0.3 on Amazon EC2
 The general idea is to help others who would like to learn how to host the latest version of Hadoop on Amazon EC2.
-(still working on the instructions for namenode and datanode)
 #### Prerequisites on your computer (Windows)
 - Putty
 - WinSCP
