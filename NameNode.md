@@ -20,37 +20,34 @@ wget http://www-us.apache.org/dist/hadoop/common/hadoop-3.0.3/hadoop-3.0.3.tar.g
 ```
 sudo tar xzvf ~/Downloads/hadoop-*.tar.gz -C /usr/local
 ```
-rename "hadoop 3.0.3" directory located in /usr/local/ as "hadoop" and change the ownership of it to ubuntu
+R ename "hadoop 3.0.3" directory located in /usr/local/ as "hadoop" and change the ownership of it to ubuntu
 ```
 sudo mv /usr/local/hadoop-* /usr/local/hadoop
 sudo chown -R ubuntu /usr/local/hadoop
 ```
-#### Add HADOOP_HOME and HADOOP_CONF_DIR environment variables
+#### Add HADOOP_HOME and HADOOP_CONF_DIR environment variables to hadoop.sh
 ```
 sudo echo 'export HADOOP_HOME="/usr/local/hadoop"' | sudo tee --append /etc/profile.d/hadoop.sh
 sudo echo 'PATH="$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin"' | sudo tee --append /etc/profile.d/hadoop.sh
 sudo echo 'export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"' | sudo tee --append /etc/profile.d/hadoop.sh
 ```
-fill in private IP addresses and the name your private key; then COPY them to hadoop.sh
+#### Add namenode and datanode(s) environement variables to hadoop.sh
 ```
+export namenode="ec2-XXX-XXX-XXX-XXX.us-east-2.compute.amazonaws.com"
+export datanode1="ec2-XXX-XXX-XXX-XXX.us-east-2.compute.amazonaws.com"
 export namenodeIP="172.XXX.XXX.XXX"
 export datanode1IP="172.XXX.XXX.XXX"
 export IdentityFile="~/.ssh/YOUR_PRIVATE_KEY.pem"
+sudo echo "export namenode=\"${namenode}\"" | sudo tee --append /etc/profile.d/hadoop.sh
+sudo echo "export datanode1=\"${datanode1}\"" | sudo tee --append /etc/profile.d/hadoop.sh
+sudo echo 'export namenodeIP=${namenodeIP}' | sudo tee --append /etc/profile.d/hadoop.sh
+sudo echo 'export datanode1IP=${datanode1IP}' | sudo tee --append /etc/profile.d/hadoop.sh
+sudo echo 'export IdentityFile=${IdentityFile}' | sudo tee --append /etc/profile.d/hadoop.sh
+
 ```
-reload the environment variables
+Reload the environment variables
 ```
 source /etc/profile.d/hadoop.sh
-```
-#### Make a hard change to your hostname of NameNode
-```
-sudo hostname ${namenode}
-sudo rm -rf /etc/hostname
-echo -e "${namenode}" | sudo tee --append /etc/hostname
-sudo chown root /etc/hostname
-```
-reboot your NameNode
-```
-sudo reboot
 ```
 #### Set up config
 ```
@@ -68,9 +65,26 @@ echo "Host datanode1" | sudo tee --append ~/.ssh/config
 echo "  HostName ${datanode1}" | sudo tee --append ~/.ssh/config
 echo "  User ubuntu" | sudo tee --append ~/.ssh/config
 echo "  IdentityFile ${IdentityFile}" | sudo tee --append ~/.ssh/config
+sudo chown ubuntu ~/.ssh/config
+```
+#### Edit hosts file
+```
+sudo rm -rf /etc/hosts
+echo "127.0.0.1 localhost" | sudo tee --append /etc/hosts
+echo "${namenodeIP} namenode" | sudo tee --append /etc/hosts
+echo "${datanode1IP} datanode1" | sudo tee --append /etc/hosts
+```
+You may skip the following lines for IPv6 capable hosts.
+```
+echo "# The following lines are desirable for IPv6 capable hosts" | sudo tee --append /etc/hosts
+echo "::1 ip6-localhost ip6-loopback" | sudo tee --append /etc/hosts
+echo "fe00::0 ip6-localnet" | sudo tee --append /etc/hosts
+echo "ff00::0 ip6-mcastprefix" | sudo tee --append /etc/hosts
+echo "ff02::2 ip6-allrouters" | sudo tee --append /etc/hosts
+echo "ff02::3 ip6-allhosts" | sudo tee --append /etc/hosts
+sudo chown root /etc/hosts
 ```
 #### Edit core-site.xml
-Referece: [Cloudera](https://www.cloudera.com/documentation/enterprise/5-14-x/topics/cdh_ig_yarn_cluster_deploy.html)
 ```
 <configuration>
     <property>
@@ -135,18 +149,32 @@ The value of namenode.name.dir is the location of the metadata directory we crea
         </property>
 </configuration>
 ```
-#### Edit hosts file
+#### Generate the key fingerprint and add it to authorized_keys
 ```
-sudo rm -rf /etc/hosts
-echo "127.0.0.1 localhost" | sudo tee --append /etc/hosts > /dev/null 2>&1
-echo "127.0.1.1 $(hostname)" | sudo tee --append /etc/hosts > /dev/null 2>&1
-echo "${namenodeIP} namenode" | sudo tee --append /etc/hosts > /dev/null 2>&1
-echo "${datanode1IP} datanode1" | sudo tee --append /etc/hosts > /dev/null 2>&1
-echo "# The following lines are desirable for IPv6 capable hosts" | sudo tee --append /etc/hosts
-echo "::1 ip6-localhost ip6-loopback" | sudo tee --append /etc/hosts
-echo "fe00::0 ip6-localnet" | sudo tee --append /etc/hosts
-echo "ff00::0 ip6-mcastprefix" | sudo tee --append /etc/hosts
-echo "ff02::2 ip6-allrouters" | sudo tee --append /etc/hosts
-echo "ff02::3 ip6-allhosts" | sudo tee --append /etc/hosts
-sudo chown root /etc/hosts
+sudo rm -rf ~/.ssh/id_rsa*
+sudo rm -rf ~/.ssh/known_hosts
+ssh-keygen -f ~/.ssh/id_rsa -t rsa -P ""
+sudo chmod 0600 ~/.ssh/id_rsa.pub
+sudo cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+#### Add 0.0.0.0, namenode and datanode(s) to known_hosts
+```
+hosts=0.0.0.0,namenode,datanode1
+ssh-keyscan -H ${hosts} >> ~/.ssh/known_hosts
+```
+#### Add namenode's public key to datanode(s)
+```
+sudo cat ~/.ssh/id_rsa.pub | ssh -o StrictHostKeyChecking=no datanode1 'cat >> ~/.ssh/authorized_keys'
+```
+reboot the namenode
+```
+sudo reboot
+```
+
+Before we proceed, it'd be nice if we have the other datanode(s) set up and ready for hdfs formatting because the logs will save us once we face unexpected errors.
+
+#### HDFS format
+```
+HDFS namenode -format
+star-all.sh
 ```
