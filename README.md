@@ -14,5 +14,5 @@ The general idea is to help others who would like to learn how to host the lates
     2. Protocol: all traffic, source: anywhere
 - Key Pairs: public/private key (.pem)
 
-#### Reference
-[Hadoop Cluster Setup](http://hadoop.apache.org/docs/r3.0.3/hadoop-project-dist/hadoop-common/ClusterSetup.html#Hadoop_Startup)
+#### References
+- [Hadoop Cluster Setup](http://hadoop.apache.org/docs/r3.0.3/hadoop-project-dist/hadoop-common/ClusterSetup.html#Hadoop_Startup)
