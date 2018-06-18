@@ -1,6 +1,5 @@
 ### NameNode
-NameNode is also called the Master, which stores the metadata of HDFS.</br>
-The following instructions will help you set up a namenode on Amazon EC2.</br>
+NameNode is also called the Master, which stores the metadata of HDFS.
 #### Update the system & install Java 8 JDK
 ```
 sudo apt-get update
@@ -97,7 +96,7 @@ sudo chown root /etc/hosts
     </property>
 </configuration>
 ```
-#### yarn.xml
+#### Edit yarn.xml
 ```
 <configuration>
     <property>
@@ -106,7 +105,7 @@ sudo chown root /etc/hosts
     </property>
 </configuration>
 ```
-#### mapred.xml
+#### Edit mapred.xml
 ```
 <configuration>
     <property>
@@ -129,7 +128,7 @@ sudo mkdir -p $HADOOP_HOME/metadata/NameNode
 sudo mkdir $HADOOP_HOME/metadata/DataNode
 sudo chown -R ubuntu $HADOOP_HOME/metadata/
 ```
-#### hdfs-site.xml
+#### Edit hdfs-site.xml
 1 replication would be good enough since we only have 2 nodes here.</br>
 The value of namenode.name.dir is the location of the metadata directory we created for the Master.  
 
@@ -171,9 +170,9 @@ reboot the namenode
 sudo reboot
 ```
 
-Before we proceed, it'd be nice if we have the other datanode(s) set up and ready for hdfs formatting because the logs will save us once we face unexpected errors.
+Before we proceed, I'd recommend that we have the rest of datanode(s) set up and ready for hdfs formatting because there are some useful imformation in the "logs" folder, which can help us resolve many unexpected issues.
 
-#### HDFS format
+#### HDFS format (only on namenode)
 ```
 HDFS namenode -format
 star-all.sh
