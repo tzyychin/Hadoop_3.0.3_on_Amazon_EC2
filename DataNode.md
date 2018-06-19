@@ -1,5 +1,5 @@
 ### DataNode
-NameNode is also called the Slave, which stores the actual data in HDFS
+DameNode is also called the Slave, which stores the actual data in HDFS
 #### Update the system & install Java 8 JDK
 ```
 sudo apt-get update
