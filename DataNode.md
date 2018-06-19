@@ -111,7 +111,6 @@ sudo chown root /etc/hosts
 ```
 #### Edit hdfs-site.xml
 ```
-### mamenode and datanode
 <configuration>
     <property>
         <name>dfs.replication</name>
